@@ -1,0 +1,24 @@
+services:
+  rosoc:
+    build: .
+    image: rosoc_img:${IMAGE_TAG:-latest}
+    container_name: rosoc_container
+    tty: true
+    stdin_open: true
+    environment:
+      - DISPLAY=${DISPLAY}
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - ./rosOC:/home/ros/rosOC
+      - ./ros_ws:/home/ros/ros_ws
+    ports:
+      - "11311:11311"  # ROS Master port
+    devices:
+      - "/dev/ttyACM0:/dev/ttyACM0"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
